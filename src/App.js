@@ -28,7 +28,6 @@ function App() {
     };
   }, []);
 
-  // Function to handle form submission
   const handleSubmit = (event) => {
     event.preventDefault();
     if (iframeUrl.trim()) {
@@ -37,31 +36,26 @@ function App() {
   };
 
   return (
-    <div className="app-container">
+    <div>
       {urlSubmitted ? (
-        <div className="iframe-container">
+        <>
           <iframe
+            style={{ width: '100vw', height: '90vh' }}
             ref={iframeRef}
             src={iframeUrl}
             title="Iframe"
-            className="full-iframe"
           />
-          <button className="send-command-button" onClick={handleSendCommand}>
-            Send Command
-          </button>
-        </div>
+          <button onClick={handleSendCommand}>Send Message</button>
+        </>
       ) : (
-        <form onSubmit={handleSubmit} className="url-form">
+        <form onSubmit={handleSubmit}>
           <input
             type="text"
             value={iframeUrl}
             onChange={(e) => setIframeUrl(e.target.value)}
             placeholder="Iframe URL"
-            className="url-input"
           />
-          <button type="submit" className="submit-button">
-            Submit
-          </button>
+          <button type="submit">Submit</button>
         </form>
       )}
     </div>
