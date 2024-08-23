@@ -8,7 +8,7 @@ function App() {
 
   // Function to handle sending a message to the iframe
   const handleSendCommand = () => {
-    const message = { message: 'test' };
+    const message = { text: 'test' };
     if (iframeRef.current) {
       iframeRef.current.contentWindow.postMessage(message, '*');
     }
