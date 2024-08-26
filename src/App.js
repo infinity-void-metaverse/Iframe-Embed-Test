@@ -14,10 +14,15 @@ function App() {
     }
   };
 
-  // Event listener for messages from the iframe
+  const handleTerminateSession = () => {
+    const message = "terminateSession";
+    if (iframeRef.current) {
+      iframeRef.current.contentWindow.postMessage(message, '*');
+    }
+  };
+
   useEffect(() => {
     const handleMessage = (event) => {
-      console.log(event.data);
     };
 
     window.addEventListener('message', handleMessage);
@@ -43,9 +48,12 @@ function App() {
             style={{ width: '100vw', height: '90vh' }}
             ref={iframeRef}
             src={iframeUrl}
+            allow="microphone; camera"
             title="Iframe"
           />
           <button onClick={handleSendCommand}>Send Message</button>
+
+          <button onClick={handleTerminateSession}>Disconnect</button>
         </>
       ) : (
         <form onSubmit={handleSubmit}>
