@@ -11,7 +11,9 @@ function App() {
 
   useEffect(() => {
     const audio = audioRef.current;
-    audio.play().catch(error => {
+    audio.play().then(() => {
+      audio.muted = false; 
+    }).catch(error => {
       console.log('Autoplay failed:', error);
     });
   }, []);
