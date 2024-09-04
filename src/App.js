@@ -1,10 +1,21 @@
 import { useRef, useEffect, useState } from 'react';
 import './App.css';
+import testAudio from './testAudio.mp3';
 
 function App() {
   const iframeRef = useRef(null);
   const [iframeUrl, setIframeUrl] = useState('https://share.streampixel.io/share-20d9e9e2-b72b-4006-994e-c9043c831d4e');
   const [urlSubmitted, setUrlSubmitted] = useState(false);
+  const audioRef = useRef(null);
+
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    audio.play().catch(error => {
+      console.log('Autoplay failed:', error);
+    });
+  }, []);
+
 
   // Function to handle sending a message to the iframe
   const handleSendCommand = () => {
@@ -68,6 +79,8 @@ function App() {
              allow="autoplay; microphone; camera"
             title="Iframe"
           />
+
+          <audio ref={audioRef} src='testAudio'/>
           <button onClick={handleSendCommand}>Send Message</button>
 
           <button onClick={handleTerminateSession}>Disconnect</button>
