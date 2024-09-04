@@ -3,7 +3,7 @@ import './App.css';
 
 function App() {
   const iframeRef = useRef(null);
-  const [iframeUrl, setIframeUrl] = useState('');
+  const [iframeUrl, setIframeUrl] = useState('https://share.streampixel.io/share-20d9e9e2-b72b-4006-994e-c9043c831d4e');
   const [urlSubmitted, setUrlSubmitted] = useState(false);
 
   // Function to handle sending a message to the iframe
@@ -13,6 +13,22 @@ function App() {
       iframeRef.current.contentWindow.postMessage(message, '*');
     }
   };
+
+
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    
+    const playAudio = () => {
+      iframe.contentWindow.document.querySelector('audio').play().catch((error) => {
+        console.log('Autoplay failed:', error);
+      });
+    };
+
+    
+    iframe.addEventListener('load', () => {
+      setTimeout(playAudio, 1000); 
+    });
+  }, []);
 
   const handleTerminateSession = () => {
     const message = "terminateSession";
@@ -42,13 +58,14 @@ function App() {
 
   return (
     <div>
-      {urlSubmitted ? (
+      {!urlSubmitted ? (
         <>
           <iframe
             style={{ width: '100vw', height: '90vh' }}
             ref={iframeRef}
             src={iframeUrl}
-            allow="microphone; camera"
+            
+             allow="autoplay; microphone; camera"
             title="Iframe"
           />
           <button onClick={handleSendCommand}>Send Message</button>
