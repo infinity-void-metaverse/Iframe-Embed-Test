@@ -1,47 +1,35 @@
 import { useRef, useEffect, useState } from 'react';
 import './App.css';
-import testAudio from './testAudio.mp3';
 
 function App() {
   const iframeRef = useRef(null);
-  const [iframeUrl, setIframeUrl] = useState('https://share.streampixel.io/share-011825c0-5f03-44e5-82e6-9fb9381fa064');
+  const [iframeUrl, setIframeUrl] = useState('');
   const [urlSubmitted, setUrlSubmitted] = useState(false);
-  const audioRef = useRef(null);
-
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    audio.play().then(() => {
-      audio.muted = false; 
-    }).catch(error => {
-      console.log('Autoplay failed:', error);
-    });
-  }, []);
-
 
   // Function to handle sending a message to the iframe
   const handleSendCommand = () => {
     const message = { message: 'test' };
+
     if (iframeRef.current) {
       iframeRef.current.contentWindow.postMessage(message, '*');
     }
   };
 
+  const handleMute = () => {
+    const message = { message: 'muteAudio' };
 
-  useEffect(() => {
-    const iframe = iframeRef.current;
-    
-    const playAudio = () => {
-      iframe.contentWindow.document.querySelector('audio').play().catch((error) => {
-        console.log('Autoplay failed:', error);
-      });
-    };
+    if (iframeRef.current) {
+      iframeRef.current.contentWindow.postMessage(message, '*');
+    }
+  };
 
-    
-    iframe.addEventListener('load', () => {
-      setTimeout(playAudio, 1000); 
-    });
-  }, []);
+  const handleUnMute = () => {
+    const message = { message: 'unMuteAudio' };
+
+    if (iframeRef.current) {
+      iframeRef.current.contentWindow.postMessage(message, '*');
+    }
+  };
 
   const handleTerminateSession = () => {
     const message = "terminateSession";
@@ -52,6 +40,9 @@ function App() {
 
   useEffect(() => {
     const handleMessage = (event) => {
+    if (event.data == "loadingComplete"){
+      alert("LOADING COMPLETE")
+    }
     };
 
     window.addEventListener('message', handleMessage);
@@ -71,22 +62,24 @@ function App() {
 
   return (
     <div>
-      {!urlSubmitted ? (
+      {urlSubmitted ? (
         <>
           <iframe
             style={{ width: '100vw', height: '90vh' }}
             ref={iframeRef}
             src={iframeUrl}
-            
-             allow="autoplay; microphone; camera"
+            allow="microphone; camera"
             title="Iframe"
           />
-
-          <audio ref={audioRef} src='testAudio'/>
           <button onClick={handleSendCommand}>Send Message</button>
 
+          <button onClick={handleMute}>Mute</button>
+
+          <button onClick={handleUnMute}>UnMute</button>
           <button onClick={handleTerminateSession}>Disconnect</button>
-        </>
+
+
+  </>
       ) : (
         <form onSubmit={handleSubmit}>
           <input
