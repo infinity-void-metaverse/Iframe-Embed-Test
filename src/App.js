@@ -15,16 +15,9 @@ function App() {
     }
   };
 
-  const handleMute = () => {
-    const message = { message: 'muteAudio' };
-
-    if (iframeRef.current) {
-      iframeRef.current.contentWindow.postMessage(message, '*');
-    }
-  };
-
-  const handleUnMute = () => {
-    const message = { message: 'unMuteAudio' };
+ 
+  const toggleAudio = () => {
+    const message = { message: 'toggleAudio' };
 
     if (iframeRef.current) {
       iframeRef.current.contentWindow.postMessage(message, '*');
@@ -32,7 +25,7 @@ function App() {
   };
 
   const handleTerminateSession = () => {
-    const message = "terminateSession";
+    const message = { message: 'terminateSession' };
     if (iframeRef.current) {
       iframeRef.current.contentWindow.postMessage(message, '*');
     }
@@ -73,9 +66,8 @@ function App() {
           />
           <button onClick={handleSendCommand}>Send Message</button>
 
-          <button onClick={handleMute}>Mute</button>
+          <button onClick={toggleAudio}>Mute/UnMute</button>
 
-          <button onClick={handleUnMute}>UnMute</button>
           <button onClick={handleTerminateSession}>Disconnect</button>
 
 
