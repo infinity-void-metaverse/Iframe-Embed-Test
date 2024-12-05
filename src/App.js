@@ -39,8 +39,22 @@ function App() {
   };
 
   useEffect(() => {
+
+
+   
+    setTimeout(()=>{
+      const message = { message: 'startApp' };
+      if (iframeRef.current) {
+      iframeRef.current.contentWindow.postMessage(message, '*');
+      }
+    },5000)
+      
+
+
+
     const handleMessage = (event) => {
-      console.log(event);
+console.log(event.data);
+
     if (event.data == "loadingComplete"){
       alert("LOADING COMPLETE")
     }
@@ -52,7 +66,7 @@ function App() {
     return () => {
       window.removeEventListener('message', handleMessage);
     };
-  }, []);
+  }, [ iframeRef.current,urlSubmitted]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
