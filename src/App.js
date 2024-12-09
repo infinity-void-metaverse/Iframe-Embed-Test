@@ -53,10 +53,13 @@ function App() {
 
 
     const handleMessage = (event) => {
-console.log(event.data);
 
     if (event.data == "loadingComplete"){
       alert("LOADING COMPLETE")
+
+      const message = { message: 'cropVideo' };
+      iframeRef.current.contentWindow.postMessage(message, '*');
+
     }
     };
 
