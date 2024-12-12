@@ -39,9 +39,19 @@ function App() {
   };
 
   useEffect(() => {
+    const message = { message: 'AFKClick' };
+    setInterval(() => {
+
+      if (iframeRef.current) {
+        iframeRef.current.contentWindow.postMessage(message, '*');
+      }
+    }, 600000); 
+
+  }, []); 
 
 
-   
+  useEffect(() => {
+
     setTimeout(()=>{
       const message = { message: 'startApp' };
       if (iframeRef.current) {
@@ -54,11 +64,12 @@ function App() {
 
     const handleMessage = (event) => {
 
+      console.log(event.data);
+
     if (event.data == "loadingComplete"){
       alert("LOADING COMPLETE")
 
-      const message = { message: 'cropVideo' };
-      iframeRef.current.contentWindow.postMessage(message, '*');
+     
 
     }
     };
@@ -78,6 +89,8 @@ function App() {
     }
   };
 
+
+
   return (
     <div>
       {urlSubmitted ? (
@@ -95,7 +108,6 @@ function App() {
           <button onClick={handleUnMute}>UnMute</button>
 
           <button onClick={handleTerminateSession}>Disconnect</button>
-
 
   </>
       ) : (
