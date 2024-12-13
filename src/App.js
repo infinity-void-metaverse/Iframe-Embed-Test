@@ -6,13 +6,31 @@ function App() {
   const [iframeUrl, setIframeUrl] = useState('');
   const [urlSubmitted, setUrlSubmitted] = useState(false);
 
-  // Function to handle sending a message to the iframe
-  const handleSendCommand = () => {
-    const message = { message: 'test' };
-
+  const handleSendCommand480 = () => {
+    const message = { message: '480p (854x480)' };
+  
     if (iframeRef.current) {
+      window.focus(iframeRef.current);
       iframeRef.current.contentWindow.postMessage(message, '*');
     }
+  
+    setTimeout(() => {
+      iframeRef.current?.focus();
+    }, 100); 
+  };
+
+
+  const handleSendCommand720 = () => {
+    const message = { message: '720p (1280x720)' };
+
+     if (iframeRef.current) {
+      window.focus(iframeRef.current);
+      iframeRef.current.contentWindow.postMessage(message, '*');
+    }
+  
+    setTimeout(() => {
+      iframeRef.current?.focus();
+    }, 100); 
   };
 
  
@@ -101,8 +119,12 @@ function App() {
             src={iframeUrl}
             allow="microphone; camera"
             title="Iframe"
+            tabindex="0"
           />
-          <button onClick={handleSendCommand}>Send Message</button>
+          <button onClick={handleSendCommand480}>Set 480p</button>
+
+          <button onClick={handleSendCommand720}>Set 720p</button>
+
 
           <button onClick={handleMute}>Mute</button>
           <button onClick={handleUnMute}>UnMute</button>
