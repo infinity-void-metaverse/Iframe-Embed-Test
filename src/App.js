@@ -52,14 +52,14 @@ function App() {
   }; 
 
   const handleTerminateSession = () => {
-    const message = { message: 'terminateSession' };
+    const message = {message: 'terminateSession'};
     if (iframeRef.current) {
       iframeRef.current.contentWindow.postMessage(message, '*');
     }
   };
 
   useEffect(() => {
-    const message = { message: 'AFKClick' };
+    const message = {message: 'heartbeat'};
     setInterval(() => {
 
       if (iframeRef.current) {
