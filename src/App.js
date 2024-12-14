@@ -7,7 +7,7 @@ function App() {
   const [urlSubmitted, setUrlSubmitted] = useState(false);
 
   const handleSendCommand480 = () => {
-    const message = { message: '480p (854x480)' };
+    const message = { message: {value:'480p (854x480)',type:"setResolution"} };
   
     if (iframeRef.current) {
       window.focus(iframeRef.current);
@@ -21,7 +21,9 @@ function App() {
 
 
   const handleSendCommand720 = () => {
-    const message = { message: '720p (1280x720)' };
+
+    const message = { message: {value: '720p (1280x720)',type:"setResolution"} };
+
 
      if (iframeRef.current) {
       window.focus(iframeRef.current);
