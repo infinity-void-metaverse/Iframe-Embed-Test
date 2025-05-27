@@ -7,13 +7,15 @@ function App() {
   const [urlSubmitted, setUrlSubmitted] = useState(false);
   const [customMessage, setCustomMessage] = useState('');
 
+  // Unified function to post messages to the iframe
   const postToIframe = (payload) => {
-    if (iframeRef.current) {
+    console.log('Posting to iframe:', payload);
+    if (iframeRef.current && iframeRef.current.contentWindow) {
       window.focus(iframeRef.current);
       iframeRef.current.contentWindow.postMessage(payload, '*');
-      setTimeout(() => {
-        iframeRef.current?.focus();
-      }, 100);
+      setTimeout(() => iframeRef.current.focus(), 100);
+    } else {
+      console.warn('Iframe not ready for postMessage');
     }
   };
 
@@ -25,17 +27,9 @@ function App() {
     postToIframe({ message: { value: '720p (1280x720)', type: 'setResolution' } });
   };
 
-  const handleMute = () => {
-    postToIframe({ message: 'muteAudio' });
-  };
-
-  const handleUnMute = () => {
-    postToIframe({ message: 'unMuteAudio' });
-  };
-
-  const handleTerminateSession = () => {
-    postToIframe({ message: 'terminateSession' });
-  };
+  const handleMute = () => postToIframe({ message: 'muteAudio' });
+  const handleUnMute = () => postToIframe({ message: 'unMuteAudio' });
+  const handleTerminateSession = () => postToIframe({ message: 'terminateSession' });
 
   const handleSendCustom = () => {
     if (customMessage.trim()) {
@@ -46,23 +40,16 @@ function App() {
 
   useEffect(() => {
     const heartbeat = { message: 'heartbeat' };
-    const intervalId = setInterval(() => {
-      postToIframe(heartbeat);
-    }, 600000);
+    const intervalId = setInterval(() => postToIframe(heartbeat), 600000);
     return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
-    const start = () => postToIframe({ message: 'startApp' });
-    const startTimeout = setTimeout(start, 5000);
-
+    const startTimeout = setTimeout(() => postToIframe({ message: 'startApp' }), 5000);
     const handleMessage = (event) => {
-      console.log(event.data);
-      if (event.data === 'loadingComplete') {
-        alert('LOADING COMPLETE');
-      }
+      console.log('Received from iframe:', event.data);
+      if (event.data === 'loadingComplete') alert('LOADING COMPLETE');
     };
-
     window.addEventListener('message', handleMessage);
     return () => {
       clearTimeout(startTimeout);
@@ -70,11 +57,9 @@ function App() {
     };
   }, [urlSubmitted]);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (iframeUrl.trim()) {
-      setUrlSubmitted(true);
-    }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (iframeUrl.trim()) setUrlSubmitted(true);
   };
 
   return (
@@ -96,14 +81,19 @@ function App() {
           <button onClick={handleUnMute}>UnMute</button>
           <button onClick={handleTerminateSession}>Disconnect</button>
 
-          {/* New custom message input and button */}
-          <input
-            type="text"
-            value={customMessage}
-            onChange={(e) => setCustomMessage(e.target.value)}
-            placeholder="Enter message"
-          />
-          <button onClick={handleSendCustom}>Send Message</button>
+          {/* Custom message input and send button */}
+          <div style={{ marginTop: '10px' }}>
+            <input
+              type="text"
+              value={customMessage}
+              onChange={(e) => setCustomMessage(e.target.value)}
+              placeholder="Enter message"
+              style={{ marginRight: '8px' }}
+            />
+            <button type="button" onClick={handleSendCustom}>
+              Send Message
+            </button>
+          </div>
         </>
       ) : (
         <form onSubmit={handleSubmit}>
