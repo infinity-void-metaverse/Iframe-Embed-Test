@@ -5,61 +5,74 @@ function App() {
   const iframeRef = useRef(null);
   const [iframeUrl, setIframeUrl] = useState('');
   const [urlSubmitted, setUrlSubmitted] = useState(false);
-  const [customMessage, setCustomMessage] = useState('');
 
-  // Unified function to post messages to the iframe
-  const postToIframe = (payload) => {
-    console.log('Posting to iframe:', payload);
-    if (iframeRef.current && iframeRef.current.contentWindow) {
-      window.focus(iframeRef.current);
-      iframeRef.current.contentWindow.postMessage(payload, '*');
-      setTimeout(() => iframeRef.current.focus(), 100);
-    } else {
-      console.warn('Iframe not ready for postMessage');
+  // Function to handle sending a message to the iframe
+  const handleSendCommand = () => {
+    const message = { message: 'test' };
+
+    if (iframeRef.current) {
+      iframeRef.current.contentWindow.postMessage(message, '*');
     }
   };
 
-  const handleSendCommand480 = () => {
-    postToIframe({ message: { value: '480p (854x480)', type: 'setResolution' } });
+ 
+  const handleMute = () => {
+    const message = { message: 'muteAudio' };
+
+    if (iframeRef.current) {
+      iframeRef.current.contentWindow.postMessage(message, '*');
+    }
   };
 
-  const handleSendCommand720 = () => {
-    postToIframe({ message: { value: '720p (1280x720)', type: 'setResolution' } });
-  };
+  const handleUnMute = () => {
+    const message = { message: 'unMuteAudio' };
+    if (iframeRef.current) {
+      iframeRef.current.contentWindow.postMessage(message, '*');
+    }
+  }; 
 
-  const handleMute = () => postToIframe({ message: 'muteAudio' });
-  const handleUnMute = () => postToIframe({ message: 'unMuteAudio' });
-  const handleTerminateSession = () => postToIframe({ message: 'terminateSession' });
-
-  const handleSendCustom = () => {
-    if (customMessage.trim()) {
-      postToIframe({ message: customMessage.trim() });
-      setCustomMessage('');
+  const handleTerminateSession = () => {
+    const message = { message: 'terminateSession' };
+    if (iframeRef.current) {
+      iframeRef.current.contentWindow.postMessage(message, '*');
     }
   };
 
   useEffect(() => {
-    const heartbeat = { message: 'heartbeat' };
-    const intervalId = setInterval(() => postToIframe(heartbeat), 600000);
-    return () => clearInterval(intervalId);
-  }, []);
 
-  useEffect(() => {
-    const startTimeout = setTimeout(() => postToIframe({ message: 'startApp' }), 5000);
+
+   
+    setTimeout(()=>{
+      const message = { message: 'startApp' };
+      if (iframeRef.current) {
+      iframeRef.current.contentWindow.postMessage(message, '*');
+      }
+    },5000)
+      
+
+
+
     const handleMessage = (event) => {
-      console.log('Received from iframe:', event.data);
-      if (event.data === 'loadingComplete') alert('LOADING COMPLETE');
+console.log(event.data);
+
+    if (event.data == "loadingComplete"){
+      alert("LOADING COMPLETE")
+    }
     };
+
     window.addEventListener('message', handleMessage);
+
+    // Cleanup function to remove the event listener
     return () => {
-      clearTimeout(startTimeout);
       window.removeEventListener('message', handleMessage);
     };
-  }, [urlSubmitted]);
+  }, [ iframeRef.current,urlSubmitted]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (iframeUrl.trim()) setUrlSubmitted(true);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (iframeUrl.trim()) {
+      setUrlSubmitted(true); 
+    }
   };
 
   return (
@@ -72,29 +85,16 @@ function App() {
             src={iframeUrl}
             allow="microphone; camera"
             title="Iframe"
-            tabIndex={0}
           />
+          <button onClick={handleSendCommand}>Send Message</button>
 
-          <button onClick={handleSendCommand480}>Set 480p</button>
-          <button onClick={handleSendCommand720}>Set 720p</button>
           <button onClick={handleMute}>Mute</button>
           <button onClick={handleUnMute}>UnMute</button>
+
           <button onClick={handleTerminateSession}>Disconnect</button>
 
-          {/* Custom message input and send button */}
-          <div style={{ marginTop: '10px' }}>
-            <input
-              type="text"
-              value={customMessage}
-              onChange={(e) => setCustomMessage(e.target.value)}
-              placeholder="Enter message"
-              style={{ marginRight: '8px' }}
-            />
-            <button type="button" onClick={handleSendCustom}>
-              Send Message
-            </button>
-          </div>
-        </>
+
+  </>
       ) : (
         <form onSubmit={handleSubmit}>
           <input
