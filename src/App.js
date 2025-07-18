@@ -21,6 +21,33 @@ function App() {
 
   const handleSendCommand480 = () => {
     postToIframe({ message: { value: '480p (854x480)', type: 'setResolution' } });
+
+  
+  };
+
+  const handleSendChatStart = () => {
+  postToIframe(    {
+  message: {
+    type: "comms",
+    value: {
+      name: "Alice",
+      pfpUrl: "https://iaa.edu.in/public/uploads/admin/faculty/unr_test_161024_0535_9lih90[1]1564210749.png",
+      roomId: "room-123"
+    }
+  }
+});
+    
+  };
+
+
+    const handleDisconnectChat = () => {
+  postToIframe(    {
+  message: {
+    type: "comms",
+    value: 'disconnect'
+  }
+});
+    
   };
 
   const handleSendCommand720 = () => {
@@ -30,6 +57,8 @@ function App() {
   const handleMute = () => postToIframe({ message: 'muteAudio' });
   const handleUnMute = () => postToIframe({ message: 'unMuteAudio' });
   const handleTerminateSession = () => postToIframe({ message: 'terminateSession' });
+
+
 
   const handleSendCustom = () => {
     if (customMessage.trim()) {
@@ -74,13 +103,19 @@ function App() {
             title="Iframe"
             tabIndex={0}
           />
+          <div style={styles.controlPanel}>
+          <button onClick={handleSendCommand480} >Set 480p</button>
 
-          <button onClick={handleSendCommand480}>Set 480p</button>
+            <button onClick={handleSendChatStart}>Chat Start</button>
+
           <button onClick={handleSendCommand720}>Set 720p</button>
           <button onClick={handleMute}>Mute</button>
           <button onClick={handleUnMute}>UnMute</button>
           <button onClick={handleTerminateSession}>Disconnect</button>
 
+            <button onClick={handleDisconnectChat}>Disconnect Chat </button>
+
+</div>
           {/* Custom message input and send button */}
           <div style={{ marginTop: '10px' }}>
             <input
@@ -111,3 +146,23 @@ function App() {
 }
 
 export default App;
+
+
+const styles = {
+  button: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    border: 'none',
+    padding: '10px',
+    borderRadius: '5px',
+    color: 'white',
+    cursor: 'pointer',
+  },
+  controlPanel: {
+    position: 'fixed',
+    bottom: '20px',
+    left:'20px',
+    display: 'flex',
+    gap: '10px',
+    zIndex:'1'
+  }
+};
