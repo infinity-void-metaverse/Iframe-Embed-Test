@@ -30,7 +30,7 @@ function App() {
   message: {
     type: "comms",
     value: {
-      name: "Alice",
+      name: "User" + Math.floor(Math.random() * 10000),
       pfpUrl: "https://iaa.edu.in/public/uploads/admin/faculty/unr_test_161024_0535_9lih90[1]1564210749.png",
       roomId: "room-123"
     }
