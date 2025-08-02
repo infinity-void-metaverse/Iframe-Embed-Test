@@ -58,6 +58,8 @@ function App() {
   const handleUnMute = () => postToIframe({ message: 'unMuteAudio' });
   const handleTerminateSession = () => postToIframe({ message: 'terminateSession' });
 
+    const toggleMouseHover = () => postToIframe({ message: 'togglehoveringmouse' });
+
 
 
   const handleSendCustom = () => {
@@ -111,6 +113,9 @@ function App() {
           <button onClick={handleSendCommand720}>Set 720p</button>
           <button onClick={handleMute}>Mute</button>
           <button onClick={handleUnMute}>UnMute</button>
+
+            <button onClick={toggleMouseHover}>Mouse Hover</button>
+
           <button onClick={handleTerminateSession}>Disconnect</button>
 
             <button onClick={handleDisconnectChat}>Disconnect Chat </button>
