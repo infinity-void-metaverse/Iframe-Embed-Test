@@ -58,7 +58,9 @@ function App() {
   const handleUnMute = () => postToIframe({ message: 'unMuteAudio' });
   const handleTerminateSession = () => postToIframe({ message: 'terminateSession' });
 
-    const toggleMouseHover = () => postToIframe({ message: 'togglehoveringmouse' });
+    const enableMouseHover = () =>  postToIframe({ message: { value: true, type: 'togglehoveringmouse' } });
+
+    const disableMouseHover = () =>  postToIframe({ message: { value: false, type: 'togglehoveringmouse' } });
 
 
 
@@ -114,7 +116,10 @@ function App() {
           <button onClick={handleMute}>Mute</button>
           <button onClick={handleUnMute}>UnMute</button>
 
-            <button onClick={toggleMouseHover}>Mouse Hover</button>
+            <button onClick={enableMouseHover}>Enable Mouse Hover</button>
+
+              <button onClick={disableMouseHover}>Disable Mouse Hover</button>
+
 
           <button onClick={handleTerminateSession}>Disconnect</button>
 
